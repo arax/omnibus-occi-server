@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Perform necessary occi-server removal steps
+# after package is uninstalled.
+#
+
+echo "Occi-server has been uninstalled!"
+
+exit 0
