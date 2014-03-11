@@ -5,9 +5,9 @@ dependency "ruby"
 dependency "rubygems"
 
 build do
-  command "git clone https://github.com/EGI-FCTF/rOCCI-server /opt/occi-server"
-  command "cd /opt/occi-server && git checkout master"
+  command "git clone https://github.com/EGI-FCTF/rOCCI-server /opt/occi-server/app"
+  command "cd /opt/occi-server/app && git checkout master"
   gem "install bundler -n #{install_dir}/bin --no-rdoc --no-ri"
-  command "cd /opt/occi-server && bundle install --deployment"
+  command "cd /opt/occi-server/app && bundle install --deployment"
 end
 
