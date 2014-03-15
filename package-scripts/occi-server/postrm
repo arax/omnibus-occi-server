@@ -4,6 +4,27 @@
 # after package is uninstalled.
 #
 
-echo "Occi-server has been uninstalled!"
+PROGNAME=`basename $0`
+INSTALLER_DIR=`dirname $0`
+DEST_DIR=/opt/occi-server
+CONFIG_DIR=/etc/occi-server
+LOG_DIR=/var/log/occi-server
+USAGE="usage: $0"
+
+error_exit()
+{
+  echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
+  exit 1
+}
+
+if [ -d "$CONFIG_DIR" ]; then
+  rm -rf $CONFIG_DIR
+fi
+
+if [ -d "$LOG_DIR" ]; then
+  rm -rf $LOG_DIR
+fi
+
+echo "occi-server has been uninstalled!"
 
 exit 0

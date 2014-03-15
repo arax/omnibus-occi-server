@@ -4,13 +4,35 @@
 # after package is installed.
 #
 
-PROGNAME=$(basename $0)
+PROGNAME=`basename $0`
+INSTALLER_DIR=`dirname $0`
+DEST_DIR=/opt/occi-server
+CONFIG_DIR=/etc/occi-server
+LOG_DIR=/var/log/occi-server
+USAGE="usage: $0"
 
-function error_exit
+error_exit()
 {
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
   exit 1
 }
+
+# chown
+chown -R root:root $DEST_DIR || error_exit "Could not chown $DEST_DIR to root:root"
+
+# prepare dir structure
+mkdir -p $CONFIG_DIR || error_exit "Could not create $CONFIG_DIR"
+mkdir -p $LOG_DIR || error_exit "Could not create $LOG_DIR"
+
+# create the rocci user
+id -u rocci
+if [ "$?" -ne "0" ]; then
+  useradd --system --shell /bin/false rocci || error_exit "Could not create the rocci user account"
+  usermod -L rocci || error_exit "Could not lock the rocci user account"
+fi
+
+# chown log dir
+chown -R rocci:rocci $LOG_DIR || error_exit "Could not chown $LOG_DIR to rocci:rocci"
 
 echo "Thank you for installing occi-server!"
 
