@@ -16,7 +16,7 @@
 #
 
 name "ruby"
-default_version "1.9.3-p484"
+default_version "1.9.3-p545"
 
 dependency "zlib"
 dependency "ncurses"
@@ -31,6 +31,11 @@ dependency "libgcc" if (platform == "solaris2" and Omnibus.config.solaris_compil
 version "1.9.3-p484" do
   source :url => "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p484.tar.gz",
          :md5 => '8ac0dee72fe12d75c8b2d0ef5d0c2968'
+end
+
+version "1.9.3-p545" do
+  source :url => "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p545.tar.gz",
+         :md5 => '8e8f6e4d7d0bb54e0edf8d9c4120f40c'
 end
 
 relative_path "ruby-#{version}"

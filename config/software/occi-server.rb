@@ -19,5 +19,5 @@ build do
   bundle "install --deployment --without development test --path=#{install_dir}/embedded/app/vendor/bundle", :env => env
   command "mkdir -p #{install_dir}/embedded/app/rOCCI-server"
   command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/app/rOCCI-server/"
+  command "rm -rf #{install_dir}/embedded/app/rOCCI-server/vendor/bundle"
 end
-
