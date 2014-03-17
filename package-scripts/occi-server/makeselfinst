@@ -39,4 +39,7 @@ fi
 # chown log dir
 chown -R rocci:rocci $LOG_DIR || error_exit "Could not chown $LOG_DIR to rocci:rocci"
 
+# copy config files
+cp -Rp $DEST_DIR/embedded/app/rOCCI-server/etc/* $CONFIG_DIR || error_exit "Could not copy configuration files to $CONFIG_DIR"
+
 exit 0
