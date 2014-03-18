@@ -8,6 +8,7 @@ PROGNAME=`basename $0`
 INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
 CONFIG_DIR=/etc/occi-server
+ALT_CONFIG_DIR=/etc/occi-server.new
 LOG_DIR=/var/log/occi-server
 USAGE="usage: $0"
 
@@ -19,6 +20,10 @@ error_exit()
 
 if [ -d "$CONFIG_DIR" ]; then
   rm -rf $CONFIG_DIR
+fi
+
+if [ -d "$ALT_CONFIG_DIR" ]; then
+  rm -rf $ALT_CONFIG_DIR
 fi
 
 if [ -d "$LOG_DIR" ]; then
