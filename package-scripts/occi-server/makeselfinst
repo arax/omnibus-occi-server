@@ -62,13 +62,13 @@ sed -i "s/localhost/$(hostname -f)/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Cou
 sed -i "s/$(hostname -f):11211/localhost:11211/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 sed -i "s/$(hostname -f):2633/localhost:2633/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 
-# modify doc root
-DEST_DIR_ESCAPED=`echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g'`
-sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR_ESCAPED\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
-
 # modify paths to etc, log and tmp
 sed -i "s/rocci-server/occi-server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 sed -i "s/rocci_server/occi_server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
+
+# modify doc root
+DEST_DIR_ESCAPED=`echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g'`
+sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR_ESCAPED\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 
 echo "Thank you for installing occi-server!"
 
