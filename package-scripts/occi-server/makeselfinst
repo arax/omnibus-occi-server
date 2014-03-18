@@ -67,7 +67,7 @@ sed -i "s/rocci-server/occi-server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Cou
 sed -i "s/rocci_server/occi_server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 
 # modify doc root
-DEST_DIR_ESCAPED=`echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g'`
+DEST_DIR_ESCAPED=$(echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g')
 sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR_ESCAPED\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 
 echo "Thank you for installing occi-server!"
