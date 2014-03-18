@@ -7,6 +7,9 @@ PROGNAME=`basename $0`
 INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
 CONFIG_DIR=/etc/occi-server
+ALT_CONFIG_DIR=/etc/occi-server.new
+APACHE_EXAMPLE_VH_DIR=/etc/apache2/sites-available
+APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl
 LOG_DIR=/var/log/occi-server
 USAGE="usage: $0"
 
@@ -25,8 +28,7 @@ rm -f $DEST_DIR/$PROGNAME
 # chown
 chown -R root:root $DEST_DIR || error_exit "Could not chown $DEST_DIR to root:root"
 
-# prepare dir structure
-mkdir -p $CONFIG_DIR || error_exit "Could not create $CONFIG_DIR"
+# prepare dir structure for logging
 mkdir -p $LOG_DIR || error_exit "Could not create $LOG_DIR"
 
 # create the rocci user
@@ -40,6 +42,27 @@ fi
 chown -R rocci:rocci $LOG_DIR || error_exit "Could not chown $LOG_DIR to rocci:rocci"
 
 # copy config files
+if [ -d "$CONFIG_DIR" ]; then
+  printf "Copying configuration files into $ALT_CONFIG_DIR!"
+  CONFIG_DIR=$ALT_CONFIG_DIR
+fi
+mkdir -p $CONFIG_DIR || error_exit "Could not create $CONFIG_DIR"
 cp -Rp $DEST_DIR/embedded/app/rOCCI-server/etc/* $CONFIG_DIR || error_exit "Could not copy configuration files to $CONFIG_DIR"
+
+# add Apache2 VM examples
+mkdir -p $APACHE_EXAMPLE_VH_DIR || error_exit "Could not create $APACHE_EXAMPLE_VH_DIR"
+if [ -f "$APACHE_EXAMPLE_VH_FILE" ]; then
+  APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_FILE.new
+fi
+cp $DEST_DIR/embedded/app/rOCCI-server/examples/etc/apache2/sites-available/occi-ssl $APACHE_EXAMPLE_VH_FILE || error_exit "Could not create $APACHE_EXAMPLE_VH_FILE"
+
+# modify necessary config files
+sed -i "s/localhost/$(hostname -f)/g" $APACHE_EXAMPLE_VH_FILE
+sed -i "s/$(hostname -f):11211/localhost:11211/g" $APACHE_EXAMPLE_VH_FILE
+sed -i "s/rocci-server/occi-server/g" $APACHE_EXAMPLE_VH_FILE
+sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE
+sed -i "s/rocci_server/occi_server/g" $APACHE_EXAMPLE_VH_FILE
+
+echo "Thank you for installing occi-server!"
 
 exit 0
