@@ -8,8 +8,15 @@ INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
 CONFIG_DIR=/etc/occi-server
 ALT_CONFIG_DIR=/etc/occi-server.new
-APACHE_EXAMPLE_VH_DIR=/etc/apache2/sites-available
-APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl
+
+if [ -f "/etc/redhat-release" ]; then
+  APACHE_EXAMPLE_VH_DIR=/etc/httpd/conf.d
+  APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl.conf
+else
+  APACHE_EXAMPLE_VH_DIR=/etc/apache2/sites-available
+  APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl
+fi
+
 LOG_DIR=/var/log/occi-server
 USAGE="usage: $0"
 
@@ -32,7 +39,7 @@ chown -R root:root $DEST_DIR || error_exit "Could not chown $DEST_DIR to root:ro
 mkdir -p $LOG_DIR || error_exit "Could not create $LOG_DIR"
 
 # create the rocci user
-id -u rocci
+id -u rocci 2>/dev/null
 if [ "$?" -ne "0" ]; then
   useradd --system --shell /bin/false rocci || error_exit "Could not create the rocci user account"
   usermod -L rocci || error_exit "Could not lock the rocci user account"
@@ -66,9 +73,10 @@ sed -i "s/$(hostname -f):2633/localhost:2633/g" $APACHE_EXAMPLE_VH_FILE || error
 sed -i "s/rocci-server/occi-server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 sed -i "s/rocci_server/occi_server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 
-# modify doc root
+# modify doc root & default ruby
 DEST_DIR_ESCAPED=$(echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g')
 sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR_ESCAPED\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
+sed -i "s/#PassengerRuby \/path\/to\/your\/bin\/ruby/PassengerRuby $DEST_DIR_ESCAPED\/embedded\/bin\/ruby/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 
 echo "Thank you for installing occi-server!"
 
