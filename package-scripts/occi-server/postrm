@@ -9,6 +9,7 @@ INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
 CONFIG_DIR=/etc/occi-server
 ALT_CONFIG_DIR=/etc/occi-server.new
+LINK_DEST_DIR=/opt/rOCCI-server
 LOG_DIR=/var/log/occi-server
 USAGE="usage: $0"
 
@@ -28,6 +29,10 @@ fi
 
 if [ -d "$LOG_DIR" ]; then
   rm -rf $LOG_DIR
+fi
+
+if [ -L "$LINK_DEST_DIR" ]; then
+  rm $LINK_DEST_DIR
 fi
 
 echo "occi-server has been uninstalled!"
