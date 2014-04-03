@@ -60,6 +60,13 @@ fi
 mkdir -p $CONFIG_DIR || error_exit "Could not create $CONFIG_DIR"
 cp -Rp $DEST_DIR/embedded/app/rOCCI-server/etc/* $CONFIG_DIR || error_exit "Could not copy configuration files to $CONFIG_DIR"
 
+# create links to global config files and logs
+rm -rf $DEST_DIR/embedded/app/rOCCI-server/etc || error_exit "Could not clean up configuration in $DEST_DIR"
+ln -sf $CONFIG_DIR $DEST_DIR/embedded/app/rOCCI-server/etc || error_exit "Could not create a link to $CONFIG_DIR"
+
+rm -rf $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not clean up logs in $DEST_DIR"
+ln -sf $LOG_DIR $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not create a link to $LOG_DIR"
+
 # add Apache2 VM examples
 mkdir -p $APACHE_EXAMPLE_VH_DIR || error_exit "Could not create $APACHE_EXAMPLE_VH_DIR"
 if [ -f "$APACHE_EXAMPLE_VH_FILE" ]; then
