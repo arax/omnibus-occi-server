@@ -14,12 +14,15 @@ LINK_DEST_DIR=/opt/rOCCI-server
 if [ -f "/etc/redhat-release" ]; then
   APACHE_EXAMPLE_VH_DIR=/etc/httpd/conf.d
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl.conf
+  APACHE_ENVVARS_FILE=/etc/sysconfig/httpd
 else
   APACHE_EXAMPLE_VH_DIR=/etc/apache2/sites-available
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl
+  APACHE_ENVVARS_FILE=/etc/apache2/envvars
 fi
 
 LOG_DIR=/var/log/occi-server
+RUNTIME_DIR=$DEST_DIR/runtime
 USAGE="usage: $0"
 
 error_exit()
@@ -47,9 +50,13 @@ fi
 # chown log dir
 chown -R rocci:rocci $LOG_DIR || error_exit "Could not chown $LOG_DIR to rocci:rocci"
 
+# prepare runtime dir
+mkdir -p $RUNTIME_DIR || error_exit "Cloud not create $RUNTIME_DIR"
+chown -R rocci:rocci $RUNTIME_DIR || error_exit "Could not chown $RUNTIME_DIR to rocci:rocci"
+
 # copy config files
 if [ -d "$CONFIG_DIR" ]; then
-  printf "Copying configuration files into $ALT_CONFIG_DIR!"
+  printf "%s\n" "Copying configuration files into $ALT_CONFIG_DIR!"
   CONFIG_DIR=$ALT_CONFIG_DIR
 fi
 mkdir -p $CONFIG_DIR || error_exit "Could not create $CONFIG_DIR"
@@ -83,6 +90,14 @@ sed -i "s/rocci_server/occi_server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Cou
 DEST_DIR_ESCAPED=$(echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g')
 sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR_ESCAPED\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 sed -i "s/#PassengerRuby \/path\/to\/your\/bin\/ruby/PassengerRuby $DEST_DIR_ESCAPED\/embedded\/bin\/ruby/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
+
+# point apache2 to our runtime dir
+grep $APACHE_ENVVARS_FILE -e 'PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR' &>/dev/null
+if [ "$?" -ne "0" ]; then
+  echo "export PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR=$RUNTIME_DIR" >> $APACHE_ENVVARS_FILE
+else
+  printf "%s\n" "PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR is already configured!"
+fi
 
 echo "Thank you for installing occi-server!"
 
