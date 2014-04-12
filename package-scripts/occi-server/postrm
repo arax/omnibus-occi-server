@@ -27,12 +27,17 @@ if [ -d "$ALT_CONFIG_DIR" ]; then
   rm -rf $ALT_CONFIG_DIR
 fi
 
-if [ -d "$LOG_DIR" ]; then
-  rm -rf $LOG_DIR
-fi
+# keep logs
+#if [ -d "$LOG_DIR" ]; then
+#  rm -rf $LOG_DIR
+#fi
 
 if [ -L "$LINK_DEST_DIR" ]; then
   rm $LINK_DEST_DIR
+fi
+
+if [ -d "$DEST_DIR" ]; then
+  rm -rf $DEST_DIR
 fi
 
 echo "occi-server has been uninstalled!"
