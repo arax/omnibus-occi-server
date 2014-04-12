@@ -31,12 +31,12 @@ if [ -L "$LINK_DEST_DIR" ]; then
 fi
 
 if [ -d "$DEST_DIR" ]; then
-  if [ -d "$DEST_DIR/embedded/app/rOCCI-server/log" ]; then
+  ls $DEST_DIR/embedded/app/rOCCI-server/log/*.log > /dev/null 2>&1
+
+  if [ "$?" -eq "0" ]; then
     mkdir -p $LINK_LOG_DIR || error_exit "Could not create a backup directory $LINK_LOG_DIR"
     cp -p $DEST_DIR/embedded/app/rOCCI-server/log/*.log $LINK_LOG_DIR || error_exit "Could not backup log files to $LINK_LOG_DIR"
   fi
-
-  rm -rf $DEST_DIR || error_exit "Could not remove $DEST_DIR"
 fi
 
 echo "occi-server has been uninstalled!"
