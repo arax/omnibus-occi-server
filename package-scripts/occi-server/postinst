@@ -7,8 +7,7 @@
 PROGNAME=`basename $0`
 INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
-CONFIG_DIR=/etc/occi-server
-ALT_CONFIG_DIR=/etc/occi-server.new
+LINK_CONFIG_DIR=/etc/occi-server
 LINK_DEST_DIR=/opt/rOCCI-server
 
 if [ -f "/etc/redhat-release" ]; then
@@ -21,7 +20,7 @@ else
   APACHE_ENVVARS_FILE=/etc/apache2/envvars
 fi
 
-LOG_DIR=/var/log/occi-server
+LINK_LOG_DIR=/var/log/occi-server
 RUNTIME_DIR=$DEST_DIR/runtime
 USAGE="usage: $0"
 
@@ -35,10 +34,14 @@ error_exit()
 chown -R root:root $DEST_DIR || error_exit "Could not chown $DEST_DIR to root:root"
 
 # create link
-ln -sf $DEST_DIR/embedded/app/rOCCI-server $LINK_DEST_DIR || error_exit "Cloud not create a link to $LINK_DEST_DIR"
+ln -sf $DEST_DIR/embedded/app/rOCCI-server $LINK_DEST_DIR || error_exit "Cloud not create a link from $LINK_DEST_DIR"
 
 # prepare dir structure for logging
-mkdir -p $LOG_DIR || error_exit "Could not create $LOG_DIR"
+if [ -d "$LINK_LOG_DIR" ] && [ ! -L "$LINK_LOG_DIR" ]; then
+  cp -p $LINK_LOG_DIR/*.log $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not copy backed up logs to the new directory"
+  rm -rf $LINK_LOG_DIR || error_exit "Could not remove $LINK_LOG_DIR"
+fi
+ln -sf $DEST_DIR/embedded/app/rOCCI-server/log $LINK_LOG_DIR || error_exit "Could not create a link from $LINK_LOG_DIR"
 
 # create the rocci user
 id -u rocci 2>/dev/null
@@ -48,26 +51,15 @@ if [ "$?" -ne "0" ]; then
 fi
 
 # chown log dir
-chown -R rocci:rocci $LOG_DIR || error_exit "Could not chown $LOG_DIR to rocci:rocci"
+chown -R rocci:rocci $LINK_LOG_DIR || error_exit "Could not chown $LINK_LOG_DIR to rocci:rocci"
+chown -R rocci:rocci $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not chown log directory to rocci:rocci"
 
 # prepare runtime dir
 mkdir -p $RUNTIME_DIR || error_exit "Cloud not create $RUNTIME_DIR"
 chown -R rocci:rocci $RUNTIME_DIR || error_exit "Could not chown $RUNTIME_DIR to rocci:rocci"
 
-# copy config files
-if [ -d "$CONFIG_DIR" ]; then
-  printf "%s\n" "Copying configuration files into $ALT_CONFIG_DIR!"
-  CONFIG_DIR=$ALT_CONFIG_DIR
-fi
-mkdir -p $CONFIG_DIR || error_exit "Could not create $CONFIG_DIR"
-cp -Rp $DEST_DIR/embedded/app/rOCCI-server/etc/* $CONFIG_DIR || error_exit "Could not copy configuration files to $CONFIG_DIR"
-
-# create links to global config files and logs
-rm -rf $DEST_DIR/embedded/app/rOCCI-server/etc || error_exit "Could not clean up configuration in $DEST_DIR"
-ln -sf $CONFIG_DIR $DEST_DIR/embedded/app/rOCCI-server/etc || error_exit "Could not create a link to $CONFIG_DIR"
-
-rm -rf $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not clean up logs in $DEST_DIR"
-ln -sf $LOG_DIR $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not create a link to $LOG_DIR"
+# link config files
+ln -sf $DEST_DIR/embedded/app/rOCCI-server/etc $LINK_CONFIG_DIR || error_exit "Could not create a link from $LINK_CONFIG_DIR"
 
 # add Apache2 VM examples
 mkdir -p $APACHE_EXAMPLE_VH_DIR || error_exit "Could not create $APACHE_EXAMPLE_VH_DIR"

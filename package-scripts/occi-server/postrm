@@ -7,10 +7,9 @@
 PROGNAME=`basename $0`
 INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
-CONFIG_DIR=/etc/occi-server
-ALT_CONFIG_DIR=/etc/occi-server.new
+LINK_CONFIG_DIR=/etc/occi-server
 LINK_DEST_DIR=/opt/rOCCI-server
-LOG_DIR=/var/log/occi-server
+LINK_LOG_DIR=/var/log/occi-server
 USAGE="usage: $0"
 
 error_exit()
@@ -19,25 +18,25 @@ error_exit()
   exit 1
 }
 
-if [ -d "$CONFIG_DIR" ]; then
-  rm -rf $CONFIG_DIR
+if [ -L "$LINK_CONFIG_DIR" ]; then
+  rm $LINK_CONFIG_DIR || error_exit "Could not unlink $LINK_CONFIG_DIR"
 fi
 
-if [ -d "$ALT_CONFIG_DIR" ]; then
-  rm -rf $ALT_CONFIG_DIR
+if [ -L "$LINK_LOG_DIR" ]; then
+ rm $LINK_LOG_DIR || error_exit "Could not unlink $LINK_LOG_DIR"
 fi
-
-# keep logs
-#if [ -d "$LOG_DIR" ]; then
-#  rm -rf $LOG_DIR
-#fi
 
 if [ -L "$LINK_DEST_DIR" ]; then
-  rm $LINK_DEST_DIR
+  rm $LINK_DEST_DIR || error_exit "Could not unlink $LINK_DEST_DIR"
 fi
 
 if [ -d "$DEST_DIR" ]; then
-  rm -rf $DEST_DIR
+  if [ -d "$DEST_DIR/embedded/app/rOCCI-server/log" ]; then
+    mkdir -p $LINK_LOG_DIR || error_exit "Could not create a backup directory $LINK_LOG_DIR"
+    cp -p $DEST_DIR/embedded/app/rOCCI-server/log/*.log $LINK_LOG_DIR || error_exit "Could not backup log files to $LINK_LOG_DIR"
+  fi
+
+  rm -rf $DEST_DIR || error_exit "Could not remove $DEST_DIR"
 fi
 
 echo "occi-server has been uninstalled!"
