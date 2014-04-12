@@ -5,7 +5,7 @@ homepage "https://github.com/EGI-FCTF/rOCCI-server"
 replaces        "occi-server"
 install_path    "/opt/occi-server"
 build_version   "1.0.0.beta.9"
-build_iteration 2
+build_iteration 3
 
 # creates required build directories
 dependency "preparation"
