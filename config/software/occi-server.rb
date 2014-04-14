@@ -1,5 +1,5 @@
 name "occi-server"
-default_version "master"
+default_version "1.0.x"
 
 dependency "ruby"
 dependency "rubygems"
