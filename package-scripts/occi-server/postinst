@@ -34,12 +34,18 @@ error_exit()
 chown -R root:root $DEST_DIR || error_exit "Could not chown $DEST_DIR to root:root"
 
 # create link
+if [ -L "$LINK_DEST_DIR" ]; then
+  rm $LINK_DEST_DIR || error_exit "Could not unlink $LINK_DEST_DIR"
+fi
 ln -sf $DEST_DIR/embedded/app/rOCCI-server $LINK_DEST_DIR || error_exit "Cloud not create a link from $LINK_DEST_DIR"
 
 # prepare dir structure for logging
 if [ -d "$LINK_LOG_DIR" ] && [ ! -L "$LINK_LOG_DIR" ]; then
   cp -p $LINK_LOG_DIR/*.log $DEST_DIR/embedded/app/rOCCI-server/log || error_exit "Could not copy backed up logs to the new directory"
   rm -rf $LINK_LOG_DIR || error_exit "Could not remove $LINK_LOG_DIR"
+fi
+if [ -L "$LINK_LOG_DIR" ]; then
+ rm $LINK_LOG_DIR || error_exit "Could not unlink $LINK_LOG_DIR"
 fi
 ln -sf $DEST_DIR/embedded/app/rOCCI-server/log $LINK_LOG_DIR || error_exit "Could not create a link from $LINK_LOG_DIR"
 
@@ -59,6 +65,9 @@ mkdir -p $RUNTIME_DIR || error_exit "Cloud not create $RUNTIME_DIR"
 chown -R rocci:rocci $RUNTIME_DIR || error_exit "Could not chown $RUNTIME_DIR to rocci:rocci"
 
 # link config files
+if [ -L "$LINK_CONFIG_DIR" ]; then
+  rm $LINK_CONFIG_DIR || error_exit "Could not unlink $LINK_CONFIG_DIR"
+fi
 ln -sf $DEST_DIR/embedded/app/rOCCI-server/etc $LINK_CONFIG_DIR || error_exit "Could not create a link from $LINK_CONFIG_DIR"
 
 # add Apache2 VM examples

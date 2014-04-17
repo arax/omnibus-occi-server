@@ -39,6 +39,13 @@ if [ -d "$DEST_DIR" ]; then
   fi
 fi
 
+if [ -f "/etc/redhat-release" ]; then
+  rm -rf $DEST_DIR || error_exit "Could not unlink $DEST_DIR"
+else
+  rmdir $DEST_DIR/runtime || /bin/true
+  rmdir $DEST_DIR || /bin/true
+fi
+
 echo "occi-server has been uninstalled!"
 
 exit 0
