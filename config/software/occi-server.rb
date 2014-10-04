@@ -1,5 +1,5 @@
 name "occi-server"
-default_version "1.0.x"
+default_version "master"
 
 dependency "ruby"
 dependency "rubygems"
@@ -15,7 +15,6 @@ source :git => "https://github.com/EGI-FCTF/rOCCI-server"
 
 build do
   gem "install bundler -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
-  gem "install rake -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   gem "install passenger -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   bundle "install --deployment --without development test --path=#{install_dir}/embedded/app/vendor/bundle", :env => env
   command "mkdir -p #{install_dir}/embedded/app/rOCCI-server"

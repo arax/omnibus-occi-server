@@ -16,7 +16,7 @@
 #
 
 name "ruby"
-default_version "1.9.3-p545"
+default_version "2.1.3"
 
 dependency "zlib"
 dependency "ncurses"
@@ -24,18 +24,23 @@ dependency "libedit"
 dependency "openssl"
 dependency "libyaml"
 dependency "libiconv"
+dependency "libffi"
 dependency "gdbm" #if (platform == "mac_os_x" or platform == "freebsd" or platform == "aix")
-dependency "gdbm_old"
 dependency "libgcc" if (platform == "solaris2" and Omnibus.config.solaris_compiler == "gcc")
 
 version "1.9.3-p484" do
-  source :url => "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p484.tar.gz",
+  source :url => "http://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p484.tar.gz",
          :md5 => '8ac0dee72fe12d75c8b2d0ef5d0c2968'
 end
 
 version "1.9.3-p545" do
-  source :url => "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p545.tar.gz",
+  source :url => "http://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p545.tar.gz",
          :md5 => '8e8f6e4d7d0bb54e0edf8d9c4120f40c'
+end
+
+version "2.1.3" do
+  source :url => "http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.3.tar.gz",
+         :md5 => '74a37b9ad90e4ea63c0eed32b9d5b18f'
 end
 
 relative_path "ruby-#{version}"
@@ -108,11 +113,12 @@ env =
 build do
   configure_command = ["./configure",
                        "--prefix=#{install_dir}/embedded",
-                       "--with-out-ext=fiddle",
                        "--enable-shared",
                        "--enable-libedit",
                        "--with-ext=psych",
-                       "--disable-install-doc"]
+                       "--disable-install-doc",
+                       "--without-gmp",
+                       "--with-out-ext=dbm"]
 
   case platform
   when "aix"
