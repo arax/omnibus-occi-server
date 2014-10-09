@@ -27,9 +27,11 @@ bash 'run_omnibus_build' do
       pkg_dir = 'ubuntu-14.04'
     end
   end
- 
-  pkg_dir = pkg_dir ? "#{work_dir}/packages/#{pkg_dir}" : "#{work_dir}/packages"
 
+  user 'vagrant'
+  group 'omnibus'
+
+  pkg_dir = pkg_dir ? "#{work_dir}/packages/#{pkg_dir}" : "#{work_dir}/packages"
   cwd work_dir
   timeout 7200
 
