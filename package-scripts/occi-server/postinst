@@ -14,10 +14,12 @@ if [ -f "/etc/redhat-release" ]; then
   APACHE_EXAMPLE_VH_DIR=/etc/httpd/conf.d
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl.conf
   APACHE_ENVVARS_FILE=/etc/sysconfig/httpd
+  APACHE_PASSENGER_CONF=$APACHE_EXAMPLE_VH_DIR/passenger.conf
 else
   APACHE_EXAMPLE_VH_DIR=/etc/apache2/sites-available
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl
   APACHE_ENVVARS_FILE=/etc/apache2/envvars
+  APACHE_PASSENGER_CONF=/etc/apache2/mods-available/passenger.conf
 fi
 
 LINK_LOG_DIR=/var/log/occi-server
@@ -98,6 +100,11 @@ if [ "$?" -ne "0" ]; then
   echo "export PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR=$RUNTIME_DIR" >> $APACHE_ENVVARS_FILE
 else
   printf "%s\n" "PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR is already configured!"
+fi
+
+# Fix pre-loaded Ruby in old CentOS systems
+if [ -f "/etc/redhat-release" ]; then
+  sed -i "s/PassengerDefaultRuby \/usr\/bin\/ruby/PassengerDefaultRuby $DEST_DIR_ESCAPED\/embedded\/bin\/ruby/g" $APACHE_PASSENGER_CONF || error_exit "Could not adapt $APACHE_PASSENGER_CONF to local configuration"
 fi
 
 echo "Thank you for installing occi-server!"
