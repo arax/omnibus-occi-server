@@ -6,5 +6,8 @@ cookbook 'apt', '~> 2.0'
 
 cookbook 'omnibus'
 
+#
+cookbook 'omnibus-build', path: 'cookbooks/omnibus-build'
+
 # Uncomment to use the latest version of the Omnibus cookbook from GitHub
 # cookbook 'omnibus', github: 'opscode-cookbooks/omnibus'

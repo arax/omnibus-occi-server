@@ -1,6 +1,8 @@
 DEPENDENCIES
   apt (~> 2.0)
   omnibus
+  omnibus-build
+    path: cookbooks/omnibus-build
 
 GRAPH
   7-zip (1.0.2)
@@ -18,6 +20,8 @@ GRAPH
     windows (~> 1.30)
     wix (~> 1.1)
     yum-epel (~> 0.4)
+  omnibus-build (0.1.0)
+    omnibus (>= 0.0.0)
   windows (1.34.6)
     chef_handler (>= 0.0.0)
   wix (1.1.0)
