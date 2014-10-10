@@ -98,11 +98,6 @@ else
   printf "%s\n" "PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR is already configured!"
 fi
 
-# Fix pre-loaded Ruby in old CentOS systems
-if [ -f "/etc/redhat-release" ]; then
-  sed -i "s/PassengerDefaultRuby \/usr\/bin\/ruby/PassengerDefaultRuby $DEST_DIR_ESCAPED\/embedded\/bin\/ruby/g" $APACHE_PASSENGER_CONF || error_exit "Could not adapt $APACHE_PASSENGER_CONF to local configuration"
-fi
-
 echo "Thank you for installing occi-server!"
 
 exit 0
