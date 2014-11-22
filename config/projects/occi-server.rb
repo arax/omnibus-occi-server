@@ -6,10 +6,10 @@ homepage "https://github.com/EGI-FCTF/rOCCI-server"
 # and /opt/occi-server on all other platforms
 install_dir "#{default_root}/#{name}"
 build_version "1.1.5"
-build_iteration 2
+build_iteration 3
 
-override :rubygems, :version => '2.4.1'
-override :ruby, :version => '2.1.3'
+override :rubygems, :version => '2.4.4'
+override :ruby, :version => '2.1.5'
 
 # Creates required build directories
 dependency "preparation"
