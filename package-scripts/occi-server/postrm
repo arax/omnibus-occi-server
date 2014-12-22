@@ -18,6 +18,11 @@ error_exit()
   exit 1
 }
 
+if [ "X$1" = "Xupgrade" ] || [ "X$1" = "X1" ]; then
+  echo "Skipping clean-up, this is an upgrade!"
+  exit 0
+fi
+
 if [ -L "$LINK_CONFIG_DIR" ]; then
   rm $LINK_CONFIG_DIR || error_exit "Could not unlink $LINK_CONFIG_DIR"
 fi
