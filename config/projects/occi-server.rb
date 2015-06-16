@@ -23,10 +23,14 @@ dependency "version-manifest"
 # add external (runtime) dependencies/services
 external_deps = if File.exists?('/etc/redhat-release')
                   # we are on CentOS/SL
-                  %w(httpd mod_ssl policycoreutils-python mod_security memcached git mod_passenger rubygem-passenger-devel)
+                  deps = %w(httpd mod_ssl policycoreutils-python mod_security memcached git)
+                  deps.concat ['mod_passenger >= 4.0', 'rubygem-passenger-devel >= 4.0']
+                  deps
                 else
                   # we are in Debian/Ubuntu
-                  %w(apache2 libapache2-mod-passenger libapache2-modsecurity memcached git)
+                  deps = %w(apache2 libapache2-modsecurity memcached git)
+                  deps << 'libapache2-mod-passenger (>= 4.0)'
+                  deps
                 end
 external_deps.each { |ext_dep| runtime_dependency ext_dep }
 
