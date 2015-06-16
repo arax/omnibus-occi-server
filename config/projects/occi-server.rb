@@ -1,6 +1,7 @@
 name "occi-server"
-maintainer "parak@cesnet.cz"
+maintainer "Boris Parak <parak@cesnet.cz>"
 homepage "https://github.com/EGI-FCTF/rOCCI-server"
+description "An OCCI translation layer for a multitude of Cloud Management Frameworks and Public Cloud Service Providers."
 
 # Defaults to C:/occi-server on Windows
 # and /opt/occi-server on all other platforms
@@ -33,6 +34,20 @@ external_deps = if File.exists?('/etc/redhat-release')
                   deps
                 end
 external_deps.each { |ext_dep| runtime_dependency ext_dep }
+
+# tweaking package-specific options
+package :deb do
+  vendor 'CESNET, Grid Department <cloud@metacentrum.cz>'
+  license 'Apache 2.0'
+  priority 'extra'
+  section 'net'
+end
+
+package :rpm do
+  vendor 'CESNET, Grid Department <cloud@metacentrum.cz>'
+  license 'Apache 2.0'
+  category 'Applications/System'
+end
 
 exclude "**/.git"
 exclude "**/bundler/git"
