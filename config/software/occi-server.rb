@@ -4,6 +4,7 @@ default_version "1.1.x"
 dependency "ruby"
 dependency "rubygems"
 dependency "rsync"
+dependency "liblzma"
 
 env = {
   "LDFLAGS" => "-L#{install_dir}/embedded/lib -I#{install_dir}/embedded/include",
