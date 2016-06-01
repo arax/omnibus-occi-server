@@ -60,7 +60,7 @@ fi
 ln -sf $DEST_DIR/embedded/app/rOCCI-server/log $LINK_LOG_DIR || error_exit "Could not create a link from $LINK_LOG_DIR"
 
 # create the rocci user
-id -u rocci 2>/dev/null
+id -u rocci > /dev/null 2>&1
 if [ "$?" -ne "0" ]; then
   useradd --system --shell /bin/false rocci || error_exit "Could not create the rocci user account"
   usermod -L rocci || error_exit "Could not lock the rocci user account"
