@@ -9,8 +9,13 @@ INSTALLER_DIR=`dirname $0`
 DEST_DIR=/opt/occi-server
 LINK_CONFIG_DIR=/etc/occi-server
 LINK_DEST_DIR=/opt/rOCCI-server
+FACTER_BINARY=/opt/occi-server/bin/facter
 
-if [ -f "/etc/redhat-release" ]; then
+OPERATINGSYSTEM=`${FACTER_BINARY} operatingsystem`
+LSBMAJDISTRELEASE=`${FACTER_BINARY} lsbmajdistrelease`
+OPERATINGSYSTEMMAJRELEASE=`${FACTER_BINARY} operatingsystemmajrelease`
+
+if [ "x${OPERATINGSYSTEM}" == "xCentOS" ]; then
   APACHE_EXAMPLE_VH_DIR=/etc/httpd/conf.d
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl.conf
   APACHE_ENVVARS_FILE=/etc/sysconfig/httpd
