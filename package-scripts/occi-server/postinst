@@ -23,6 +23,9 @@ if [ "x${OPERATINGSYSTEM}" == "xCentOS" ]; then
 else
   APACHE_EXAMPLE_VH_DIR=/etc/apache2/sites-available
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_DIR/occi-ssl
+  if [ "x${OPERATINGSYSTEM}" = "xDebian" -a "x${LSBMAJDISTRELEASE}" \> "x7" ] || [ "x${OPERATINGSYSTEM}" = "xUbuntu" -a "x${LSBMAJDISTRELEASE}" \> "x13" ]; then
+    APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_FILE.conf
+  fi
   APACHE_ENVVARS_FILE=/etc/apache2/envvars
   APACHE_PASSENGER_CONF=/etc/apache2/mods-available/passenger.conf
 fi
@@ -80,9 +83,11 @@ ln -sf $DEST_DIR/embedded/app/rOCCI-server/etc $LINK_CONFIG_DIR || error_exit "C
 # add Apache2 VM examples
 mkdir -p $APACHE_EXAMPLE_VH_DIR || error_exit "Could not create $APACHE_EXAMPLE_VH_DIR"
 if [ -f "$APACHE_EXAMPLE_VH_FILE" ]; then
+  chmod o-rwx $APACHE_EXAMPLE_VH_FILE
   APACHE_EXAMPLE_VH_FILE=$APACHE_EXAMPLE_VH_FILE.new
 fi
 cp $DEST_DIR/embedded/app/rOCCI-server/examples/etc/apache2/sites-available/occi-ssl $APACHE_EXAMPLE_VH_FILE || error_exit "Could not create $APACHE_EXAMPLE_VH_FILE"
+chmod o-rwx $APACHE_EXAMPLE_VH_FILE
 
 # adapt A2 VH example to the current system
 # set real hostname
@@ -98,6 +103,12 @@ sed -i "s/rocci_server/occi_server/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Cou
 DEST_DIR_ESCAPED=$(echo "$DEST_DIR" | sed -e 's/[\/&]/\\&/g')
 sed -i "s/\/opt\/rOCCI-server\/public/$DEST_DIR_ESCAPED\/embedded\/app\/rOCCI-server\/public/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
 sed -i "s/#PassengerRuby \/path\/to\/your\/bin\/ruby/PassengerRuby $DEST_DIR_ESCAPED\/embedded\/bin\/ruby/g" $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
+
+# apache configuration syntax change for newer versions
+if [ "x${OPERATINGSYSTEM}" = "xDebian" -a "x${LSBMAJDISTRELEASE}" \> "x7" ] || [ "x${OPERATINGSYSTEM}" = "xCentOS" -a "x${OPERATINGSYSTEMMAJRELEASE}" \> "x6" ] || [ "x${OPERATINGSYSTEM}" = "xUbuntu" -a "x${LSBMAJDISTRELEASE}" \> "x13" ]; then
+  sed -i 's/Allow from all/&\n\tRequire all granted/' $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
+  sed -i 's/#+LegacyDNStringFormat/+LegacyDNStringFormat/' $APACHE_EXAMPLE_VH_FILE || error_exit "Could not adapt $APACHE_EXAMPLE_VH_FILE to local configuration"
+fi
 
 # point apache2 to our runtime dir
 grep $APACHE_ENVVARS_FILE -e 'PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR' &>/dev/null
