@@ -1,3 +1,5 @@
+require 'facter'
+
 name "occi-server"
 maintainer "Boris Parak <parak@cesnet.cz>"
 homepage "https://github.com/EGI-FCTF/rOCCI-server"
@@ -6,7 +8,7 @@ description "An OCCI translation layer for a multitude of Cloud Management Frame
 # Defaults to C:/occi-server on Windows
 # and /opt/occi-server on all other platforms
 install_dir "#{default_root}/#{name}"
-build_version "1.1.7"
+build_version "1.1.8"
 build_iteration 1
 
 override :rubygems, :version => '2.4.4'
@@ -21,18 +23,23 @@ dependency "occi-server"
 # Version manifest file
 dependency "version-manifest"
 
+# facter
+dependency "facter"
+
 # add external (runtime) dependencies/services
-external_deps = if File.exists?('/etc/redhat-release')
-                  # we are on CentOS/SL
-                  deps = %w(httpd mod_ssl policycoreutils-python mod_security memcached git)
-                  deps.concat ['mod_passenger >= 5.0', 'passenger-devel >= 5.0']
-                  deps
-                else
-                  # we are in Debian/Ubuntu
-                  deps = %w(apache2 libapache2-modsecurity memcached git)
-                  deps << 'libapache2-mod-passenger (>= 5.0)'
-                  deps
-                end
+case Facter.value('operatingsystem')
+when 'Debian', 'Ubuntu'
+  # Ubuntu 12.04: 'deb https://oss-binaries.phusionpassenger.com/apt/passenger precise main'
+  # Ubuntu 14.04: 'deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main'
+  # Debian 7: 'deb https://oss-binaries.phusionpassenger.com/apt/passenger wheezy main'
+  # Debian 8: 'deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main'
+  external_deps = %w(apache2 libapache2-modsecurity memcached git)
+  external_deps.concat ['passenger (>= 4.0)', 'passenger-dev (>= 4.0)', 'libapache2-mod-passenger (>= 4.0)']
+when 'CentOS'
+  # Centos/Scientific Linux: https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo
+  external_deps = %w(httpd mod_ssl policycoreutils-python mod_security memcached git)
+  external_deps.concat ['passenger >= 4.0', 'passenger-devel >= 4.0', 'mod_passenger >= 4.0']
+end
 external_deps.each { |ext_dep| runtime_dependency ext_dep }
 
 # tweaking package-specific options
