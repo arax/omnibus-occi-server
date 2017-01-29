@@ -9,10 +9,10 @@ description "An OCCI translation layer for a multitude of Cloud Management Frame
 # and /opt/occi-server on all other platforms
 install_dir "#{default_root}/#{name}"
 build_version "1.1.9"
-build_iteration 1
+build_iteration 2
 
-override :rubygems, :version => '2.4.4'
-override :ruby, :version => '2.1.5'
+override :rubygems, :version => '2.4.8'
+override :ruby, :version => '2.1.9'
 
 # Creates required build directories
 dependency "preparation"
