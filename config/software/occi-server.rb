@@ -16,6 +16,7 @@ source git: "https://github.com/EGI-FCTF/rOCCI-server"
 
 build do
   gem "install bundler -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
+  gem "install rack -v '< 2' -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   gem "install passenger -v '>= 5.0' -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   gem "install rake -v '>= 10.3.2' -n #{install_dir}/embedded/bin --no-rdoc --no-ri -f"
   bundle "install --deployment --without development test --path=#{install_dir}/embedded/app/vendor/bundle", :env => env
