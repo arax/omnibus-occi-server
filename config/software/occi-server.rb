@@ -12,7 +12,7 @@ env = {
   "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
 }
 
-source git: "https://github.com/EGI-FCTF/rOCCI-server"
+source git: "https://github.com/EGI-FCTF/rOCCI-server.git"
 
 build do
   gem "install bundler -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
