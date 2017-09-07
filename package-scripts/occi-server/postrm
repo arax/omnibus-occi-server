@@ -12,6 +12,7 @@ DEST_DIR="/opt/occi-server"
 CONFIG_DIR="/etc/occi-server"
 CONFIG_FILE="${CONFIG_DIR}/rocci_server.yml"
 LOG_DIR="/var/log/occi-server"
+SYSD_DIR="/etc/systemd/system"
 
 error_exit()
 {
@@ -30,6 +31,14 @@ if [ "X$1" = "purge" ] || [ "X$1" = "X0" ]; then
 
   if [ -d "$DEST_DIR" ]; then
     rm -rf "$DEST_DIR" || error_exit "Could not unlink $DEST_DIR"
+  fi
+
+  if [ -d "$SYSD_DIR" ]; then
+    for SD_FILE in "$SYSD_DIR/occi-server.*" ; do
+      if [ -L "$SD_FILE" ]; then
+        rm "$SD_FILE" || error_exit "Could not unlink $SD_FILE"
+      fi
+    done
   fi
 fi
 
