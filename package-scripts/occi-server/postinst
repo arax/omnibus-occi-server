@@ -20,6 +20,7 @@ EMB_LOG_DIR="${EMB_DEST_DIR}/log"
 EMB_SYSD_DIR="${EMB_DEST_DIR}/examples/systemd"
 
 DEFAULT_BACKEND="opennebula"
+DEFAULT_PORT=11443
 
 error_exit()
 {
@@ -59,7 +60,7 @@ if [ ! -e "$CONFIG_FILE" ] && [ ! -L "$EMB_CONFIG_FILE" ]; then
   chmod 640 "$CONFIG_FILE" || error_exit "Could not change ownership of $CONFIG_FILE"
 
   # change defaults
-  sed -i "s/hostname\: localhost/hostname\: $(hostname -f)/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
+  sed -i "s/port\: 3000/port\: ${DEFAULT_PORT}/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
   sed -i "s/backend\: dummy/backend\: ${DEFAULT_BACKEND}/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
   sed -i "s/schemas\.localhost/schemas\.$(hostname -f)/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
 fi
