@@ -5,7 +5,7 @@ This project creates full-stack platform-specific packages for
 
 Installation
 ------------
-You must have a sane Ruby 1.9+ environment with Bundler installed. Ensure all
+You must have a sane Ruby 2.2.6+ environment with Bundler installed. Ensure all
 the required gems are installed:
 
 ```shell
@@ -85,14 +85,14 @@ liking, you can bring up an individual build environment using the `kitchen`
 command.
 
 ```shell
-$ bin/kitchen converge ubuntu-1204
+$ bin/kitchen converge ubuntu-1604
 ```
 
 Then login to the instance and build the project as described in the Usage
 section:
 
 ```shell
-$ bundle exec kitchen login ubuntu-1204
+$ bundle exec kitchen login ubuntu-1604
 [vagrant@ubuntu...] $ cd occi-server
 [vagrant@ubuntu...] $ bundle install
 [vagrant@ubuntu...] $ ...
