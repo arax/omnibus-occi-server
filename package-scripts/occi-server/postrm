@@ -20,7 +20,7 @@ error_exit()
   exit 1
 }
 
-if [ "X$1" = "purge" ] || [ "X$1" = "X0" ]; then
+if [ "X$1" = "Xpurge" ] || [ "X$1" = "X0" ]; then
   if [ -d "$CONFIG_DIR" ]; then
     rm -rf "$CONFIG_DIR" || error_exit "Could not unlink $CONFIG_DIR"
   fi
