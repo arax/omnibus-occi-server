@@ -1,9 +1,11 @@
 name 'occi-server'
 default_version 'master'
 
+license "Apache-2.0"
+license_file "LICENSE"
+
 dependency 'ruby'
 dependency 'rubygems'
-dependency 'rsync'
 dependency 'liblzma'
 
 env = {
@@ -17,8 +19,8 @@ source git: 'https://github.com/the-rocci-project/rOCCI-server.git'
 build do
   gem "install bundler -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   bundle "install --deployment --without development test --path=#{install_dir}/embedded/app/vendor/bundle", :env => env
-  command "mkdir -p #{install_dir}/embedded/app/rOCCI-server"
-  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git --exclude=.gitignore ./ #{install_dir}/embedded/app/rOCCI-server/"
+  sync project_dir, "#{install_dir}/embedded/app/rOCCI-server", exclude: %w[.git .gitignore]
+  copy File.join(project.files_path, '*'), "#{install_dir}/bin/"
   delete "#{install_dir}/embedded/app/rOCCI-server/vendor/bundle"
   delete "#{install_dir}/embedded/app/vendor/bundle/ruby/*/cache/*"
 end

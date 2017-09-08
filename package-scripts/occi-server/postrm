@@ -20,7 +20,7 @@ error_exit()
   exit 1
 }
 
-if [ "X$1" = "purge" ] || [ "X$1" = "X0" ]; then
+if [ "X$1" = "Xpurge" ] || [ "X$1" = "X0" ]; then
   if [ -d "$CONFIG_DIR" ]; then
     rm -rf "$CONFIG_DIR" || error_exit "Could not unlink $CONFIG_DIR"
   fi
@@ -33,13 +33,11 @@ if [ "X$1" = "purge" ] || [ "X$1" = "X0" ]; then
     rm -rf "$DEST_DIR" || error_exit "Could not unlink $DEST_DIR"
   fi
 
-  if [ -d "$SYSD_DIR" ]; then
-    for SD_FILE in "$SYSD_DIR/occi-server.*" ; do
-      if [ -L "$SD_FILE" ]; then
-        rm "$SD_FILE" || error_exit "Could not unlink $SD_FILE"
-      fi
-    done
-  fi
+  for SD_FILE in ${SYSD_DIR}/occi-server.* ; do
+    if [ -L "$SD_FILE" ]; then
+      rm "$SD_FILE" || error_exit "Could not unlink $SD_FILE"
+    fi
+  done
 fi
 
 echo "occi-server has been uninstalled!"
