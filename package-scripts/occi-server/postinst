@@ -11,6 +11,7 @@ USAGE="usage: $0"
 DEST_DIR="/opt/occi-server"
 CONFIG_DIR="/etc/occi-server"
 CONFIG_FILE="${CONFIG_DIR}/rocci_server.yml"
+CONFIG_VARS="${CONFIG_DIR}/variables"
 LOG_DIR="/var/log/occi-server"
 SYSD_DIR="/etc/systemd/system"
 
@@ -20,7 +21,9 @@ EMB_LOG_DIR="${EMB_DEST_DIR}/log"
 EMB_SYSD_DIR="${EMB_DEST_DIR}/examples/systemd"
 EMB_TMP_DIR="${EMB_DEST_DIR}/tmp"
 
+DEFAULT_LOG_LEVEL="warn"
 DEFAULT_BACKEND="opennebula"
+DEFAULT_HOST="localhost"
 DEFAULT_PORT=11443
 
 error_exit()
@@ -54,22 +57,49 @@ fi
 # configuration
 if [ ! -d "$CONFIG_DIR" ]; then
   mkdir -p "$CONFIG_DIR" || error_exit "Could not create $CONFIG_DIR"
-  chmod 750 "$CONFIG_DIR" || error_exit "Could not change permissions on $CONFIG_DIR"
+  chmod 755 "$CONFIG_DIR" || error_exit "Could not change permissions on $CONFIG_DIR"
 fi
 
 if [ ! -e "$CONFIG_FILE" ] && [ ! -L "$EMB_CONFIG_FILE" ]; then
   cp "$EMB_CONFIG_FILE" "$CONFIG_FILE" || error_exit "Could not copy $EMB_CONFIG_FILE to $CONFIG_FILE"
+  chown root:rocci "$CONFIG_FILE" || error_exit "Could not change ownership of $CONFIG_FILE"
   chmod 640 "$CONFIG_FILE" || error_exit "Could not change permissions on $CONFIG_FILE"
-
-  # change defaults
-  sed -i "s/port\: 3000/port\: ${DEFAULT_PORT}/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
-  sed -i "s/backend\: dummy/backend\: ${DEFAULT_BACKEND}/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
-  sed -i "s/schemas\.localhost/schemas\.$(hostname -f)/g" "$CONFIG_FILE" || error_exit "Could not adapt $CONFIG_FILE"
 fi
 
 if [ ! -L "$EMB_CONFIG_FILE" ] && [ -e "$CONFIG_FILE" ]; then
   rm "$EMB_CONFIG_FILE" || error_exit "Could not unlink $EMB_CONFIG_FILE"
   ln -s "$CONFIG_FILE" "$EMB_CONFIG_FILE" || error_exit "Could not link $CONFIG_FILE to $EMB_CONFIG_FILE"
+fi
+
+if [ ! -f "$CONFIG_VARS" ]; then
+  cat > "$CONFIG_VARS" << EOF
+export RAILS_ENV=production
+
+export HOST=$DEFAULT_HOST
+export PORT=$DEFAULT_PORT
+export SECRET_KEY_BASE=$(head -c 69 /dev/urandom | base64 -w 0)
+# export HOST_CERT=/path/to/cert
+# export HOST_KEY=/path/to/key
+
+export ROCCI_SERVER_LOG_LEVEL=$DEFAULT_LOG_LEVEL
+export ROCCI_SERVER_HOSTNAME=$DEFAULT_HOST
+export ROCCI_SERVER_PORT=$DEFAULT_PORT
+# export ROCCI_SERVER_KEYSTONE_URI=https://localhost:5000/
+# export ROCCI_SERVER_MEMCACHE=localhost:11211
+export ROCCI_SERVER_BACKEND=$DEFAULT_BACKEND
+
+# export ROCCI_SERVER_OPENNEBULA_ENDPOINT=http://localhost:2633/RPC2
+# export ROCCI_SERVER_OPENNEBULA_TIMEOUT=30
+export ROCCI_SERVER_OPENNEBULA_SCHEMA_NAMESPACE=http://schemas.${DEFAULT_HOST}/
+# export ROCCI_SERVER_OPENNEBULA_TEMPLATE_DIR=
+
+# export ROCCI_SERVER_ENCRYPTION_TOKEN_CIPHER=
+# export ROCCI_SERVER_ENCRYPTION_TOKEN_KEY=$(head -c 69 /dev/urandom | base64 -w 0)
+# export ROCCI_SERVER_ENCRYPTION_TOKEN_IV=$(head -c 69 /dev/urandom | base64 -w 0)
+EOF
+
+  chown root:rocci "$CONFIG_VARS" || error_exit "Could not change ownership of $CONFIG_VARS"
+  chmod 640 "$CONFIG_VARS" || error_exit "Could not change permissions on $CONFIG_VARS"
 fi
 
 # systemd
