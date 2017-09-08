@@ -34,7 +34,7 @@ if [ "X$1" = "Xpurge" ] || [ "X$1" = "X0" ]; then
   fi
 
   for SD_FILE in ${SYSD_DIR}/occi-server.* ; do
-    if [ -f "$SD_FILE" ] && [ -L "$SD_FILE" ]; then
+    if [ -L "$SD_FILE" ]; then
       rm "$SD_FILE" || error_exit "Could not unlink $SD_FILE"
     fi
   done
