@@ -27,4 +27,4 @@ if [ -f "${ETC_DIR}/variables" ]; then
   source "${ETC_DIR}/variables"
 fi
 
-/opt/occi-server/embedded/bin/bundle exec --keep-file-descriptors puma $@
+exec /opt/occi-server/embedded/bin/bundle exec --keep-file-descriptors puma $@
