@@ -1,6 +1,9 @@
 name 'occi-server'
 default_version 'master'
 
+license "Apache-2.0"
+license_file "LICENSE"
+
 dependency 'ruby'
 dependency 'rubygems'
 dependency 'liblzma'
@@ -17,7 +20,7 @@ build do
   gem "install bundler -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   bundle "install --deployment --without development test --path=#{install_dir}/embedded/app/vendor/bundle", :env => env
   sync project_dir, "#{install_dir}/embedded/app/rOCCI-server", exclude: %w[.git .gitignore]
-  link "#{install_dir}/embedded/app/rOCCI-server/bin/oneresources", "#{install_dir}/bin/"
+  copy File.join(project.files_path, 'oneresources'), "#{install_dir}/bin/"
   delete "#{install_dir}/embedded/app/rOCCI-server/vendor/bundle"
   delete "#{install_dir}/embedded/app/vendor/bundle/ruby/*/cache/*"
 end
