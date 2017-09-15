@@ -1,5 +1,5 @@
 name 'occi-server'
-default_version 'master'
+default_version 'v2.0.0.beta.2'
 
 license "Apache-2.0"
 license_file "LICENSE"

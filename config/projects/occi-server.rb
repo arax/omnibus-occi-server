@@ -6,7 +6,7 @@ description 'The rOCCI Framework - Server-side implementation for OpenNebula'
 # Defaults to C:/occi-server on Windows
 # and /opt/occi-server on all other platforms
 install_dir "#{default_root}/#{name}"
-build_version '2.0.0.beta.1'
+build_version '2.0.0.beta.2'
 build_iteration 1
 
 override :rubygems, :version => '2.6.8'
