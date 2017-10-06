@@ -22,4 +22,4 @@
 EMB_DIR=/opt/occi-server/embedded
 cd ${EMB_DIR}/app/rOCCI-server
 
-${EMB_DIR}/bin/bundle exec bin/oneresources $@
+${EMB_DIR}/bin/bundle exec bin/oneresource $@
