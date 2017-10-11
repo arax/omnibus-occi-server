@@ -107,7 +107,7 @@ fi
 if [ -d "$SYSD_DIR" ] && [ -d "$EMB_SYSD_DIR" ]; then
   for SD_FILE in ${EMB_SYSD_DIR}/* ; do
     if [ -f "$SD_FILE" ]; then
-      ln -sf "$SD_FILE" "${SYSD_DIR}/" || error_exit "Could not link $SD_FILE into $SYSD_DIR"
+      cp "$SD_FILE" "${SYSD_DIR}/" || error_exit "Could not copy $SD_FILE into $SYSD_DIR"
     fi
   done
 fi
