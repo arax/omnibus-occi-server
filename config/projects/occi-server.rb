@@ -7,7 +7,7 @@ description 'The rOCCI Framework - Server-side implementation for OpenNebula'
 # and /opt/occi-server on all other platforms
 install_dir "#{default_root}/#{name}"
 build_version '2.0.0'
-build_iteration 4
+build_iteration 5
 
 override :rubygems, :version => '2.6.8'
 override :ruby, :version => '2.4.1'

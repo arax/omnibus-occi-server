@@ -1,0 +1,18 @@
+[Unit]
+Description="rOCCI-server HTTPS Service"
+After=network.target
+Requires=occi-server.socket
+Requires=memcached.service
+
+[Service]
+Type=simple
+User=rocci
+Group=rocci
+PrivateTmp=true
+Restart=always
+
+ExecStart="/opt/occi-server/bin/occi-server"
+WorkingDirectory=/opt/occi-server/embedded/app/rOCCI-server
+
+[Install]
+WantedBy=multi-user.target

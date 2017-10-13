@@ -20,7 +20,11 @@ build do
   gem "install bundler -n #{install_dir}/embedded/bin --no-rdoc --no-ri"
   bundle "install --deployment --without development test --path=#{install_dir}/embedded/app/vendor/bundle", :env => env
   sync project_dir, "#{install_dir}/embedded/app/rOCCI-server", exclude: %w[.git .gitignore]
-  copy File.join(project.files_path, '*'), "#{install_dir}/bin/"
+
+  mkdir "#{install_dir}/examples/"
+  copy File.join(project.files_path, '*'), "#{install_dir}/examples/"
+  copy File.join(project.files_path, 'bin', '*'), "#{install_dir}/bin/"
+
   delete "#{install_dir}/embedded/app/rOCCI-server/vendor/bundle"
   delete "#{install_dir}/embedded/app/vendor/bundle/ruby/*/cache/*"
 end

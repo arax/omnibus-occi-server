@@ -18,8 +18,9 @@ SYSD_DIR="/etc/systemd/system"
 EMB_DEST_DIR="${DEST_DIR}/embedded/app/rOCCI-server"
 EMB_CONFIG_FILE="${EMB_DEST_DIR}/config/rocci_server.yml"
 EMB_LOG_DIR="${EMB_DEST_DIR}/log"
-EMB_SYSD_DIR="${EMB_DEST_DIR}/examples/systemd"
 EMB_TMP_DIR="${EMB_DEST_DIR}/tmp"
+
+EMB_SYSD_DIR="${DEST_DIR}/examples/systemd"
 
 DEFAULT_LOG_LEVEL="warn"
 DEFAULT_BACKEND="opennebula"
