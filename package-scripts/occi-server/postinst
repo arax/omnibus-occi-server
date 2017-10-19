@@ -96,8 +96,8 @@ export ROCCI_SERVER_OPENNEBULA_SCHEMA_NAMESPACE=http://schemas.${DEFAULT_HOSTNAM
 # export ROCCI_SERVER_OPENNEBULA_TEMPLATE_DIR=
 
 # export ROCCI_SERVER_ENCRYPTION_TOKEN_CIPHER=AES-128-CBC
-# export ROCCI_SERVER_ENCRYPTION_TOKEN_KEY=$(head -c 69 /dev/urandom | base64 -w 0)
-# export ROCCI_SERVER_ENCRYPTION_TOKEN_IV=$(head -c 69 /dev/urandom | base64 -w 0)
+# export ROCCI_SERVER_ENCRYPTION_TOKEN_KEY=$(head -c 12 /dev/urandom | base64 -w 0)
+# export ROCCI_SERVER_ENCRYPTION_TOKEN_IV=$(head -c 12 /dev/urandom | base64 -w 0)
 EOF
 
   chown root:rocci "$CONFIG_VARS" || error_exit "Could not change ownership of $CONFIG_VARS"
